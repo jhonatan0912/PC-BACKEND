@@ -5,11 +5,12 @@ import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import * as jwt from 'jsonwebtoken';
 
-
 @Injectable()
 export class AuthService {
 
-  constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) { }
 
   async register({ names, email, password }) {
     try {
