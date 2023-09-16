@@ -14,7 +14,6 @@ export class AuthService {
 
   async register({ names, email, password }) {
     try {
-
       const existingUser = await this.userRepository.findOne({ where: { email } });
 
       if (existingUser) {
@@ -27,20 +26,22 @@ export class AuthService {
         names,
         email,
         password: hashedPassword
-      })
+      });
 
       await this.userRepository.save(newUser);
 
-      const jwtPayload = { names, email };
+      const userId = newUser.id;
+
+      const jwtPayload = { userId, names, email };
       const secretKey = 'chinese-palace-app';
       const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '1h' });
 
       return token;
-
     } catch (error) {
       throw new Error(error.message || 'Error in server');
     }
   }
+
 
   async login({ email, password }) {
     try {
@@ -56,7 +57,7 @@ export class AuthService {
         return { error: 'Contraseña incorrecta' };
       }
 
-      const jwtPayload = { names: user.names, email: user.email };
+      const jwtPayload = { userId: user.id, names: user.names, email: user.email };
       const secretKey = 'chinese-palace-app';
       const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '1h' });
 

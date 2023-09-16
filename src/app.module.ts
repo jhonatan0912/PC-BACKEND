@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { AddresesModule } from './addreses/addreses.module';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthorizationMiddleware } from './authorization.middleware';
 
 @Module({
   imports: [
@@ -27,6 +27,14 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     AddresesModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [AuthorizationMiddleware],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthorizationMiddleware)
+    .forRoutes('addreses/*')
+  }
+
+}

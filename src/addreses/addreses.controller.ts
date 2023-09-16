@@ -2,9 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { AddresesService } from './addreses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAdressDto } from './dto/update-address.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthorizationMiddleware } from 'src/authorization.middleware';
 
 @Controller('addreses')
+@UseGuards(AuthorizationMiddleware)
 export class AddresesController {
 
   constructor(private readonly addresesService: AddresesService) { }
@@ -16,6 +17,9 @@ export class AddresesController {
 
   @Get('user/:userId')
   async findAll(@Param('userId') userId: number) {
+    console.log('Controlador de direcciones - findAll ejecutándose...');
+    console.log('User ID:', userId);
+    
     return this.addresesService.findAll(userId);
   }
 

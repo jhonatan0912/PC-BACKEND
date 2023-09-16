@@ -4,6 +4,7 @@ import { AddresesController } from './addreses.controller';
 import { DistrictsModule } from './districts/districts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Address } from './entities/address.entity';
+import { AuthorizationMiddleware } from 'src/authorization.middleware';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { Address } from './entities/address.entity';
     DistrictsModule,
   ],
   controllers: [AddresesController],
-  providers: [AddresesService],
+  providers: [AddresesService, AuthorizationMiddleware],
   exports: []
 })
 export class AddresesModule { }
