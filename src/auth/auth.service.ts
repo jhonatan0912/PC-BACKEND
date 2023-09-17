@@ -48,13 +48,13 @@ export class AuthService {
       const user = await this.userRepository.findOne({ where: { email } });
 
       if (!user) {
-        return { error: 'Correo electrónico no encontrado' };
+        return { error: 'Email not found' };
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
-        return { error: 'Contraseña incorrecta' };
+        return { error: 'Incorrect password' };
       }
 
       const jwtPayload = { userId: user.id, names: user.names, email: user.email };
@@ -63,8 +63,7 @@ export class AuthService {
 
       return { token };
     } catch (error) {
-      console.error('Error:', error);
-      return { error: 'Error en el servidor' };
+      return new Error(error.message || 'Internal server error');
     }
   }
 }

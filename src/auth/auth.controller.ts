@@ -1,8 +1,11 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginDto } from './dto/user.dto';
 import { Response } from 'express';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
 
@@ -23,8 +26,17 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() user: LoginDto) {
+  async login(@Body() user: LoginDto, @Res() res: Response) {
 
-    return this.authService.login(user);
+    try {
+      const token = await this.authService.login(user);
+      res.json({
+        email: user.email,
+        token: token
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error';
+      res.status(500).json({ error: errorMessage });
+    }
   }
 }

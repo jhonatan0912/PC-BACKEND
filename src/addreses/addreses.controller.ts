@@ -3,7 +3,9 @@ import { AddresesService } from './addreses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAdressDto } from './dto/update-address.dto';
 import { AuthorizationMiddleware } from 'src/authorization.middleware';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('addreses')
 @Controller('addreses')
 @UseGuards(AuthorizationMiddleware)
 export class AddresesController {

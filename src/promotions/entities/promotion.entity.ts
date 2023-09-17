@@ -1,1 +1,1 @@
-export class Promotion {}
+export class Promotion { }

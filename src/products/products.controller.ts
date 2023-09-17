@@ -2,8 +2,9 @@ import { Controller, Post, Body, Res } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/product.dto';
 import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
 
