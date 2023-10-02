@@ -1,11 +1,11 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import * as jwt from 'jsonwebtoken';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { throwError } from 'rxjs';
+import { LoginDto } from './dto/login.dto';
+import { User } from './user.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +17,7 @@ export class AuthService {
   async register(createUserDto: CreateUserDto) {
 
     const { names, email, password } = createUserDto;
+    
     try {
       const existingUser = await this.userRepository.findOne({ where: { email } });
 
@@ -52,7 +53,10 @@ export class AuthService {
   }
 
 
-  async login({ email, password }) {
+  async login(loginDto: LoginDto) {
+
+    const { email, password } = loginDto;
+
     try {
       const user = await this.userRepository.findOne({ where: { email } });
 

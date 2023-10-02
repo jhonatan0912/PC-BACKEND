@@ -1,11 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsModule } from './products/products.module';
-import { CategoriesModule } from './categories/categories.module';
-import { PromotionsModule } from './promotions/promotions.module';
 import { AddresesModule } from './addreses/addreses.module';
+import { AuthModule } from './auth/auth.module';
 import { AuthorizationMiddleware } from './authorization.middleware';
+import { ProductsModule } from './products/products.module';
+import { PromotionsModule } from './promotions/promotions.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -22,9 +22,9 @@ import { AuthorizationMiddleware } from './authorization.middleware';
     }),
     AuthModule,
     ProductsModule,
-    CategoriesModule,
     PromotionsModule,
     AddresesModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [AuthorizationMiddleware],

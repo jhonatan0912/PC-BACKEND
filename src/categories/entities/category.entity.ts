@@ -7,9 +7,8 @@ export class Category {
   id: number;
 
   @Column()
-  image: string;
+  icon: string;
 
   @Column()
   name: string;
-
 }

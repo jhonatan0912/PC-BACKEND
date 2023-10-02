@@ -21,7 +21,7 @@ export class AddresesController {
   async findAll(@Param('userId') userId: number) {
     console.log('Controlador de direcciones - findAll ejecutándose...');
     console.log('User ID:', userId);
-    
+
     return this.addresesService.findAll(userId);
   }
 
