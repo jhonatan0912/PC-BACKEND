@@ -12,31 +12,16 @@ export class AuthController {
   constructor(private authService: AuthService) { }
 
   @Post('register')
-  async register(@Body() newUser: CreateUserDto, @Res() res: Response) {
+  async register(@Body() newUser: CreateUserDto) {
 
-    try {
-
-      const token = await this.authService.register(newUser);
-      res.json({ token });
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error';
-      res.status(500).json({ error: errorMessage });
-    }
+    return await this.authService.register(newUser);
+    
   }
 
   @Post('login')
-  async login(@Body() user: LoginDto, @Res() res: Response) {
+  async login(@Body() user: LoginDto) {
 
-    try {
-      const token = await this.authService.login(user);
-      res.json({
-        email: user.email,
-        token: token
-      });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error';
-      res.status(500).json({ error: errorMessage });
-    }
+    return await this.authService.login(user);
+
   }
 }

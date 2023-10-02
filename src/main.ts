@@ -8,11 +8,15 @@ async function main() {
 
   app.setGlobalPrefix('api/v1')
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    })
+  );
 
   const config = new DocumentBuilder()
     .setTitle('Palacio Chino API')
-    .setDescription('API para el Palacio Chino')
     .setVersion('1.0')
     .build();
 

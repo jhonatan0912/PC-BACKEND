@@ -4,6 +4,8 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import * as jwt from 'jsonwebtoken';
+import { CreateUserDto } from './dto/create-user.dto';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +14,9 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) { }
 
-  async register({ names, email, password }) {
+  async register(createUserDto: CreateUserDto) {
+
+    const { names, email, password } = createUserDto;
     try {
       const existingUser = await this.userRepository.findOne({ where: { email } });
 
@@ -34,11 +38,16 @@ export class AuthService {
 
       const jwtPayload = { userId, names, email };
       const secretKey = 'chinese-palace-app';
-      const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '1h' });
+      const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '6h' });
 
-      return token;
+      const { password: _, ...rest } = newUser
+
+      return {
+        ...rest,
+        token
+      };
     } catch (error) {
-      throw new Error(error.message || 'Error in server');
+      return { error: error.message || 'Internal server error' };
     }
   }
 
@@ -59,7 +68,7 @@ export class AuthService {
 
       const jwtPayload = { userId: user.id, names: user.names, email: user.email };
       const secretKey = 'chinese-palace-app';
-      const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '1h' });
+      const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '6h' });
 
       return { token };
     } catch (error) {
