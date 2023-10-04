@@ -1,23 +1,24 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from "bcrypt";
-import * as jwt from 'jsonwebtoken';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { User } from './user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private jwtService: JwtService
   ) { }
 
   async register(createUserDto: CreateUserDto) {
 
     const { names, email, password } = createUserDto;
-    
+
     try {
       const existingUser = await this.userRepository.findOne({ where: { email } });
 
@@ -35,11 +36,7 @@ export class AuthService {
 
       await this.userRepository.save(newUser);
 
-      const userId = newUser.id;
-
-      const jwtPayload = { userId, names, email };
-      const secretKey = 'chinese-palace-app';
-      const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '6h' });
+      const token = await this.generateToken(newUser);
 
       const { password: _, ...rest } = newUser
 
@@ -70,13 +67,21 @@ export class AuthService {
         return { error: 'Incorrect password' };
       }
 
-      const jwtPayload = { userId: user.id, names: user.names, email: user.email };
-      const secretKey = 'chinese-palace-app';
-      const token = jwt.sign(jwtPayload, secretKey, { expiresIn: '6h' });
+      const token = await this.generateToken(user);
 
-      return { token };
+      return {
+        email: user.email,
+        token
+      };
     } catch (error) {
       return new Error(error.message || 'Internal server error');
     }
+  }
+
+  private async generateToken(user: User): Promise<string> {
+    const payload = { names: user.names, email: user.email };
+    const token = await this.jwtService.signAsync(payload);
+
+    return token;
   }
 }

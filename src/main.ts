@@ -16,6 +16,7 @@ async function main() {
   );
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Palacio Chino API')
     .setVersion('1.0')
     .build();

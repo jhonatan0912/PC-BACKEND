@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AddresesModule } from './addreses/addreses.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthorizationMiddleware } from './authorization.middleware';
 import { ProductsModule } from './products/products.module';
@@ -23,7 +22,6 @@ import { CategoriesModule } from './categories/categories.module';
     AuthModule,
     ProductsModule,
     PromotionsModule,
-    AddresesModule,
     CategoriesModule,
   ],
   controllers: [],
@@ -34,7 +32,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
-    .forRoutes('addreses/*')
+      .forRoutes('addreses/*')
   }
 
 }
