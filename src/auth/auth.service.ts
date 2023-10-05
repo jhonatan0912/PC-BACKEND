@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from "bcrypt";
 import { Repository } from 'typeorm';
@@ -79,9 +79,18 @@ export class AuthService {
   }
 
   private async generateToken(user: User): Promise<string> {
-    const payload = { names: user.names, email: user.email };
+    const payload = { email: user.email, role: user.role };
     const token = await this.jwtService.signAsync(payload);
 
     return token;
+  }
+
+  async profile({ email, role }: { email: string, role: string }) {
+
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    const { password: _, ...rest } = user;
+
+    return { ...rest }
   }
 }

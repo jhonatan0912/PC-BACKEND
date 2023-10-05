@@ -1,9 +1,19 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './guards/auth.guard';
+import { Roles } from './decorators/roles.decorator';
+import { RolesGuard } from './guards/roles.guard';
+import { Role } from "./enums/role.enum";
+
+interface RequestWithUser extends Request {
+  user: {
+    email: string,
+    role: string
+  }
+}
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,11 +37,12 @@ export class AuthController {
 
   @Get('profile')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @Roles(Role.USER)
+  @UseGuards(AuthGuard, RolesGuard)
   profile(
-    @Request()
-    req: any
+    @Req()
+    req: RequestWithUser
   ) {
-    return req.user;
+    return this.authService.profile(req.user);
   }
 }

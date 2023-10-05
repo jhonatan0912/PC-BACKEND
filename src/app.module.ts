@@ -5,6 +5,7 @@ import { AuthorizationMiddleware } from './authorization.middleware';
 import { ProductsModule } from './products/products.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { CategoriesModule } from './categories/categories.module';
+import { AddressesModule } from './addresses/addresses.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CategoriesModule } from './categories/categories.module';
     ProductsModule,
     PromotionsModule,
     CategoriesModule,
+    AddressesModule,
   ],
   controllers: [],
   providers: [AuthorizationMiddleware],
